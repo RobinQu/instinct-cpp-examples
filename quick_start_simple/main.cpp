@@ -1,9 +1,5 @@
 #include <iostream>
-#include <instinct/chain/message_chain.hpp>
-#include <instinct/input_parser/prompt_value_variant_input_parser.hpp>
-#include <instinct/chat_model/ollama_chat.hpp>
-#include <instinct/output_parser/string_output_parser.hpp>
-#include <instinct/prompt/plain_prompt_template.hpp>
+#include <instinct/llm_all.hpp>
 
 int main()
 {
@@ -15,6 +11,19 @@ int main()
     const auto output_parser = CreateStringOutputParser();
     const auto chat_model = CreateOllamaChatModel();
     const auto xn = input_parser | string_prompt |  chat_model->AsModelFunction() | output_parser;
-    const auto result = xn->Invoke("Why sky is blue?");
-    std::cout << result <<std::endl;
+
+    { // run in sync way
+        const auto result = xn->Invoke("Why sky is blue?");
+        std::cout << result <<std::endl;
+    }
+
+    { // run in async way
+        xn->Stream("Tell me something interesting about China.")
+            | rpp::ops::as_blocking()
+            | rpp::ops::subscribe([](const auto x) {
+                std::cout << x;
+            }, [] {
+                std::cout << std::endl;
+            });
+    }
 }
