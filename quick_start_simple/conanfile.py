@@ -15,3 +15,4 @@ class CompressorRecipe(ConanFile):
 
     def requirements(self):
         self.requires("instinct-cpp/0.1.5")
+
