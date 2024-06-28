@@ -14,5 +14,13 @@ class CompressorRecipe(ConanFile):
         cmake_layout(self)
 
     def requirements(self):
-        self.requires("instinct-cpp/0.1.5")
+        # toggle off all switches
+        # you can turn on for further experiments
+        self.requires("instinct-cpp/0.1.5", options={
+            "with_pdfium": False,
+            "with_duckx": False,
+            "with_exprtk": False,
+            "with_duckdb": False,
+            "with_tests": False
+        })
 
